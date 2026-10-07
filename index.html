@@ -1,0 +1,974 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
+    <meta name="theme-color" content="#f8fafc">
+    <title>Speed Building Test — Matter in Our Surroundings</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after {
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+            margin: 0;
+            padding: 0;
+        }
+        :root {
+            --bg-main: #f1f5f9;
+            --bg-card: #ffffff;
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --primary-light: #eff6ff;
+            --text-dark: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --green: #10b981;
+            --green-light: #ecfdf5;
+            --red: #ef4444;
+            --red-light: #fef2f2;
+            --shadow-sm: 0 1px 3px rgba(0,0,0,0.06);
+            --shadow-md: 0 4px 6px -1px rgba(0,0,0,0.08), 0 2px 4px -2px rgba(0,0,0,0.05);
+            --shadow-lg: 0 10px 15px -3px rgba(0,0,0,0.08);
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
+            background: var(--bg-main);
+            color: var(--text-dark);
+            min-height: 100dvh;
+            font-size: 15px;
+            line-height: 1.5;
+            overflow-x: hidden;
+        }
+        button {
+            font-family: inherit;
+            cursor: pointer;
+            border: none;
+            background: none;
+            color: inherit;
+        }
+        .hidden { display: none !important; }
+
+        /* MODE SELECTION SCREEN */
+        .start-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-main);
+            z-index: 100;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .start-card {
+            width: 100%;
+            max-width: 440px;
+            background: var(--bg-card);
+            border-radius: 24px;
+            padding: 36px 28px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        .brand-logo-img {
+            width: 72px;
+            height: 72px;
+            object-fit: contain;
+            margin: 0 auto 16px;
+            display: block;
+            border-radius: 16px;
+        }
+        .start-title {
+            font-size: 22px;
+            font-weight: 800;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+            letter-spacing: -0.02em;
+        }
+        .start-desc {
+            font-size: 14px;
+            color: var(--text-muted);
+            margin-bottom: 24px;
+        }
+        .mode-btn {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            width: 100%;
+            padding: 16px;
+            background: #fff;
+            border: 1.5px solid var(--border-color);
+            border-radius: 16px;
+            text-align: left;
+            margin-bottom: 12px;
+            transition: all 0.2s ease;
+        }
+        .mode-btn:hover {
+            border-color: var(--primary);
+            background: var(--primary-light);
+            transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
+        }
+        .mode-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            flex-shrink: 0;
+        }
+        .mode-icon.quiz { background: #dbeafe; color: #2563eb; }
+        .mode-icon.test { background: #d1fae5; color: #059669; }
+        .mode-name {
+            font-size: 15px;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 2px;
+        }
+        .mode-info-txt {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+        .mode-arrow {
+            margin-left: auto;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* MAIN APP */
+        .quiz-app {
+            height: 100dvh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+        .quiz-header {
+            flex-shrink: 0;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            padding: 12px 18px;
+        }
+        .quiz-header-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .hdr-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        .hdr-logo-img {
+            width: 32px;
+            height: 32px;
+            object-fit: contain;
+            border-radius: 8px;
+        }
+        .hdr-brand-title {
+            font-weight: 700;
+            font-size: 15px;
+            color: var(--text-dark);
+        }
+        .hdr-btn {
+            width: 38px;
+            height: 38px;
+            border-radius: 10px;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+            transition: all 0.15s;
+        }
+        .hdr-btn:hover { background: var(--bg-main); }
+        .hdr-timer {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            padding: 6px 14px;
+            background: #fff;
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            font-family: monospace;
+            font-size: 14px;
+            font-weight: 700;
+            color: var(--primary);
+        }
+
+        /* QUESTIONS CONTAINER */
+        .quiz-main {
+            flex: 1;
+            overflow-y: auto;
+            max-width: 900px;
+            width: 100%;
+            margin: 0 auto;
+            padding: 24px 16px;
+        }
+        .q-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 20px;
+            padding: 24px;
+            box-shadow: var(--shadow-sm);
+        }
+        .q-top {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+        .q-num-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 5px 12px;
+            background: var(--primary-light);
+            color: var(--primary);
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+        .lang-btn {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            background: var(--bg-main);
+            border: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .q-text {
+            font-size: 16px;
+            line-height: 1.6;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 22px;
+            white-space: pre-line;
+        }
+        .opts {
+            display: flex;
+            flex-direction: column;
+            gap: 11px;
+        }
+        .opt {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 14px 18px;
+            background: #fff;
+            border: 1.5px solid var(--border-color);
+            border-radius: 14px;
+            cursor: pointer;
+            transition: all 0.15s ease;
+        }
+        .opt:hover:not(.locked) {
+            border-color: var(--primary);
+            background: #f8fafc;
+        }
+        .opt.selected {
+            border-color: var(--primary);
+            background: var(--primary-light);
+        }
+        .opt.correct {
+            border-color: var(--green);
+            background: var(--green-light);
+        }
+        .opt.wrong {
+            border-color: var(--red);
+            background: var(--red-light);
+        }
+        .opt.locked { cursor: default; }
+        .opt-letter {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #fff;
+            border: 1.5px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 13px;
+            color: var(--text-muted);
+            flex-shrink: 0;
+        }
+        .opt.selected .opt-letter {
+            background: var(--primary);
+            border-color: var(--primary);
+            color: #fff;
+        }
+        .opt.correct .opt-letter {
+            background: var(--green);
+            border-color: var(--green);
+            color: #fff;
+        }
+        .opt.wrong .opt-letter {
+            background: var(--red);
+            border-color: var(--red);
+            color: #fff;
+        }
+        .opt-text {
+            flex: 1;
+            font-size: 15px;
+            font-weight: 600;
+        }
+        .opt-tag {
+            font-size: 11px;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
+        }
+        .opt.correct .opt-tag { background: var(--green); color: #fff; }
+        .opt.wrong .opt-tag { background: var(--red); color: #fff; }
+
+        .sol-box {
+            margin-top: 20px;
+            padding: 16px;
+            background: #f8fafc;
+            border-left: 4px solid var(--primary);
+            border-radius: 12px;
+        }
+        .sol-head {
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--primary);
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        .sol-content {
+            font-size: 14px;
+            line-height: 1.6;
+            color: var(--text-dark);
+        }
+
+        /* BOTTOM NAV */
+        .quiz-nav {
+            flex-shrink: 0;
+            background: #ffffff;
+            border-top: 1px solid var(--border-color);
+            padding: 12px 18px;
+        }
+        .quiz-nav-inner {
+            max-width: 900px;
+            margin: 0 auto;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 10px;
+        }
+        .nav-btn {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+            transition: all 0.15s ease;
+        }
+        .nav-btn.prev {
+            background: #fff;
+            border: 1px solid var(--border-color);
+            color: var(--text-dark);
+        }
+        .nav-btn.prev:disabled { opacity: 0.4; cursor: not-allowed; }
+        .nav-btn.submit {
+            background: var(--green-light);
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+        .nav-btn.next {
+            background: var(--primary);
+            color: #ffffff;
+        }
+        .nav-btn.next:hover { background: var(--primary-hover); }
+
+        /* PALETTE MODAL */
+        .palette-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 150;
+            display: none;
+        }
+        .palette-overlay.open { display: block; }
+        .palette-drawer {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: min(340px, 85vw);
+            background: #ffffff;
+            z-index: 160;
+            display: flex;
+            flex-direction: column;
+            transform: translateX(-100%);
+            transition: transform 0.25s ease;
+            box-shadow: var(--shadow-lg);
+        }
+        .palette-drawer.open { transform: translateX(0); }
+        .pal-head {
+            padding: 18px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            font-weight: 700;
+            font-size: 17px;
+        }
+        .pal-grid {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px;
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            align-content: start;
+        }
+        .pal-btn {
+            aspect-ratio: 1;
+            border-radius: 10px;
+            border: 1px solid var(--border-color);
+            background: #f8fafc;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.1s;
+        }
+        .pal-btn:hover { transform: scale(1.05); }
+        .pal-btn.answered { background: var(--green); color: #fff; border-color: var(--green); }
+        .pal-btn.current { outline: 2px solid var(--primary); outline-offset: 2px; }
+
+        /* SUBMIT MODAL */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            backdrop-filter: blur(4px);
+            z-index: 170;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.open { display: flex; }
+        .modal-box {
+            width: 100%;
+            max-width: 420px;
+            background: #fff;
+            border-radius: 20px;
+            padding: 28px;
+            box-shadow: var(--shadow-lg);
+            text-align: center;
+        }
+        .modal-title { font-size: 20px; font-weight: 700; margin-bottom: 16px; }
+        .modal-stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 22px;
+        }
+        .modal-stat {
+            background: #f8fafc;
+            border-radius: 12px;
+            padding: 14px;
+            border: 1px solid var(--border-color);
+        }
+        .modal-stat-num { font-size: 24px; font-weight: 800; color: var(--text-dark); }
+        .modal-stat-label { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 4px; }
+        .modal-actions { display: flex; flex-direction: column; gap: 10px; }
+        .modal-btn {
+            width: 100%;
+            padding: 14px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .modal-btn.confirm { background: var(--primary); color: #fff; }
+        .modal-btn.cancel { background: #f1f5f9; color: var(--text-dark); }
+
+        /* RESULTS SCREEN */
+        .results-screen {
+            position: fixed;
+            inset: 0;
+            background: var(--bg-main);
+            z-index: 180;
+            display: none;
+            overflow-y: auto;
+            padding: 30px 16px 60px;
+        }
+        .results-screen.open { display: block; }
+        .results-box {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        .res-hero { text-align: center; margin-bottom: 24px; }
+        .res-hero h2 { font-size: 26px; font-weight: 800; margin-bottom: 6px; }
+        .res-score-card {
+            background: linear-gradient(135deg, #1e293b, #0f172a);
+            color: #fff;
+            border-radius: 20px;
+            padding: 28px;
+            text-align: center;
+            margin-bottom: 20px;
+            box-shadow: var(--shadow-md);
+        }
+        .res-score-val { font-size: 54px; font-weight: 800; line-height: 1; margin-bottom: 6px; }
+        .res-score-val span { font-size: 22px; opacity: 0.6; }
+        .res-score-lbl { font-size: 13px; text-transform: uppercase; letter-spacing: 0.08em; opacity: 0.8; }
+        .res-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+        .res-item {
+            background: #fff;
+            border-radius: 14px;
+            padding: 16px;
+            text-align: center;
+            border: 1px solid var(--border-color);
+        }
+        .res-item-val { font-size: 22px; font-weight: 700; }
+        .res-item-lbl { font-size: 12px; color: var(--text-muted); font-weight: 600; margin-top: 4px; }
+        .res-actions { display: flex; flex-direction: column; gap: 10px; }
+        .res-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 15px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .res-btn.primary { background: var(--primary); color: #fff; }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%) translateY(-80px);
+            background: #0f172a;
+            color: #fff;
+            padding: 10px 20px;
+            border-radius: 30px;
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            z-index: 300;
+            opacity: 0;
+            transition: all 0.25s ease;
+            box-shadow: var(--shadow-lg);
+        }
+        .toast.show {
+            transform: translateX(-50%) translateY(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- START / MODE SELECT -->
+    <div class="start-screen" id="startScreen">
+        <div class="start-card">
+            <img src="logo.png" alt="Quiz Logo" class="brand-logo-img" onerror="this.style.display='none'">
+            <h1 class="start-title">Matter in Our Surroundings</h1>
+            <p class="start-desc">Speed Building Test — Choose your mode to begin.</p>
+            
+            <button class="mode-btn" onclick="startApp('quiz')">
+                <div class="mode-icon quiz"><i class="fas fa-bolt"></i></div>
+                <div>
+                    <div class="mode-name">Practice Mode</div>
+                    <div class="mode-info-txt">Instant answer &amp; key after each question.</div>
+                </div>
+                <i class="fas fa-arrow-right mode-arrow"></i>
+            </button>
+
+            <button class="mode-btn" onclick="startApp('test')">
+                <div class="mode-icon test"><i class="fas fa-clock"></i></div>
+                <div>
+                    <div class="mode-name">Exam Mode</div>
+                    <div class="mode-info-txt">Exam simulation. Complete result at the end.</div>
+                </div>
+                <i class="fas fa-arrow-right mode-arrow"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- MAIN APP SCREEN -->
+    <div class="quiz-app hidden" id="quizApp">
+        <header class="quiz-header">
+            <div class="quiz-header-inner">
+                <button class="hdr-btn" onclick="openPalette()"><i class="fas fa-th-large"></i></button>
+                <div class="hdr-brand">
+                    <img src="logo.png" alt="Logo" class="hdr-logo-img" onerror="this.style.display='none'">
+                    <span class="hdr-brand-title">Science Quiz</span>
+                </div>
+                <div class="hdr-timer">
+                    <i class="fas fa-stopwatch"></i>
+                    <span id="timerText">00:00</span>
+                </div>
+            </div>
+        </header>
+
+        <main class="quiz-main" id="quizMain"></main>
+
+        <nav class="quiz-nav" id="quizNav">
+            <div class="quiz-nav-inner">
+                <button class="nav-btn prev" id="prevBtn" onclick="prevQuestion()">
+                    <i class="fas fa-arrow-left"></i> Previous
+                </button>
+                <button class="nav-btn submit" onclick="openSubmitModal()">
+                    <i class="fas fa-paper-plane"></i> Submit
+                </button>
+                <button class="nav-btn next" id="nextBtn" onclick="nextQuestion()">
+                    <span id="nextLabel">Next</span> <i class="fas fa-arrow-right"></i>
+                </button>
+            </div>
+        </nav>
+    </div>
+
+    <!-- QUESTION PALETTE -->
+    <div class="palette-overlay" id="paletteOverlay" onclick="closePalette()"></div>
+    <aside class="palette-drawer" id="paletteDrawer">
+        <div class="pal-head">
+            <span>Questions</span>
+            <button onclick="closePalette()"><i class="fas fa-times"></i></button>
+        </div>
+        <div class="pal-grid" id="paletteGrid"></div>
+    </aside>
+
+    <!-- SUBMIT CONFIRMATION MODAL -->
+    <div class="modal-overlay" id="submitModal">
+        <div class="modal-box">
+            <h3 class="modal-title">Submit Test?</h3>
+            <div class="modal-stats-grid">
+                <div class="modal-stat">
+                    <div class="modal-stat-num" id="modalAttempted" style="color:var(--green)">0</div>
+                    <div class="modal-stat-label">Attempted</div>
+                </div>
+                <div class="modal-stat">
+                    <div class="modal-stat-num" id="modalUnattempted" style="color:var(--text-muted)">0</div>
+                    <div class="modal-stat-label">Unattempted</div>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="modal-btn confirm" onclick="confirmSubmit()">Yes, Finish Test</button>
+                <button class="modal-btn cancel" onclick="closeSubmitModal()">Resume Test</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- FINAL RESULTS SCREEN -->
+    <div class="results-screen" id="resultsScreen">
+        <div class="results-box" id="resultsInner"></div>
+    </div>
+
+    <div class="toast" id="toast"><i class="fas fa-check"></i><span id="toastText"></span></div>
+
+    <script>
+        const QUESTIONS = [
+            {"en": "Which statement is correct regarding physical and chemical changes?", "hi": "भौतिक और रासायनिक परिवर्तनों के संबंध में कौन-सा कथन सही है?", "opts": ["Chemical changes alter composition / रासायनिक परिवर्तन संघटन को बदलते हैं", "Physical changes form new substances / भौतिक परिवर्तन से नए पदार्थ बनते हैं", "All changes in solutions are chemical / विलयनों में होने वाले सभी परिवर्तन रासायनिक होते हैं", "All physical changes are irreversible / सभी भौतिक परिवर्तन अनुत्क्रमणीय होते हैं"], "ans": 0},
+            {"en": "Which statement correctly shows that a chemical change is different from a physical change?", "hi": "कौन-सा कथन सही ढंग से दर्शाता है कि रासायनिक परिवर्तन भौतिक परिवर्तन से भिन्न है?", "opts": ["Chemical change is always reversible, while physical change is never reversible. / रासायनिक परिवर्तन हमेशा प्रतिवर्ती होता है, जबकि भौतिक परिवर्तन कभी भी प्रतिवर्ती नहीं होता है।", "Chemical change results in a new substance, while physical change does not. / रासायनिक परिवर्तन से नया पदार्थ बनता है, जबकि भौतिक परिवर्तन में नहीं।", "Chemical change affects only size and shape, while physical change affects composition. / रासायनिक परिवर्तन केवल आकार और रूप को प्रभावित करता है, जबकि भौतिक परिवर्तन संरचना को प्रभावित करता है।", "Chemical change changes only appearance, while physical change forms new substances. / रासायनिक परिवर्तन केवल रूप बदलते हैं, जबकि भौतिक परिवर्तन नए पदार्थ बनाते हैं।"], "ans": 1},
+            {"en": "Avogadro's Law is correctly represented by which of the following statements?", "hi": "अवोगाद्रो के नियम को निम्नलिखित में से किस कथन द्वारा सही ढंग से दर्शाया गया है?", "opts": ["The volume of a gas is directly proportional to its temperature at constant pressure. / नियत दाब पर किसी गैस का आयतन उसके तापमान के समानुपाती होता है।", "The pressure of a gas is directly proportional to its absolute temperature at constant volume. / नियत आयतन पर किसी गैस का दाब उसके परम तापमान के समानुपाती होता है।", "Equal volumes of gases at the same temperature and pressure contain an equal number of molecules. / समान ताप और दाब पर गैसों के समान आयतन में अणुओं की संख्या समान होती है।", "The total pressure of a mixture of gases is equal to the sum of the partial pressures of the individual gases. / गैसों के मिश्रण का कुल दाब, अलग-अलग गैसों के आंशिक दबावों के योग के बराबर होता है।"], "ans": 2},
+            {"en": "What is the name of the law which states that in a mixture of gases, the total pressure is equal to the sum of the partial pressures of the individual gases?", "hi": "गैसों के मिश्रण में, कुल दाब व्यक्तिगत गैसों के आंशिक दबावों के योग के बराबर होता है, इस नियम का क्या नाम है?", "opts": ["Charles's Law of Partial Pressures / चार्ल्स का आंशिक दाब नियम", "Boyle's Law of Partial Pressures / बॉयल का आंशिक दाब नियम", "Dalton's Law of Partial Pressures / डाल्टन का आंशिक दाब नियम", "Avogadro's Law of Partial Pressures / एवोगाद्रो का आंशिक दाब नियम"], "ans": 2},
+            {"en": "What conclusion can be drawn from the experiment in which potassium permanganate solution remains coloured even after repeated dilution?", "hi": "उस प्रयोग से, जिसमें पोटेशियम परमैंगनेट का विलयन बार-बार तनु करने पर भी रंगीन बना रहता है, क्या निष्कर्ष निकाला जा सकता है?", "opts": ["Particles of matter are extremely small in size / पदार्थ के कण साइज़ में अत्यंत छोटे-छोटे होते हैं।", "Particles of matter occupy no space at all / पदार्थ के कण कोई भी रिक्त स्थान नहीं घेरते हैं।", "Particles of matter are fixed and stationary / पदार्थ के कण निश्चित और स्थिर होते हैं।", "Particles of matter are visible to naked eye / पदार्थ के कण बिना सूक्ष्मदर्शी के दिखाई देते हैं।"], "ans": 0},
+            {"en": "Which of the following best supports the concept that matter is made-up of particles?", "hi": "निम्नलिखित में से कौन-सा विकल्प इस अवधारणा का सबसे अच्छे से समर्थन करता है कि पदार्थ कणों से मिलकर बना होता है?", "opts": ["Water boils at 100°C / जल 100°C पर उबलता है।", "A drop of ink spreads uniformly in water / स्याही की एक बूंद जल में एक समान रूप से फैलती है।", "Metals conduct electricity / धातुएँ विद्युत की चालक हैं।", "Ice melts to form water / बर्फ पिघलकर जल बनाती है।"], "ans": 1},
+            {"en": "Which of the following will diffuse slowest in air?", "hi": "निम्नलिखित में से किसका विसरण वायु में सबसे धीरे होगा?", "opts": ["Chlorine / क्लोरीन", "Hydrogen / हाइड्रोजन", "Oxygen / ऑक्सीजन", "Ammonia / अमोनिया"], "ans": 0},
+            {"en": "Why are solids described as rigid in nature?", "hi": "ठोसों को कठोर प्रकृति के रूप में क्यों वर्णित किया जाता है?", "opts": ["Their particles move freely with weak mutual attraction / इनके कण दुर्बल पारस्परिक आकर्षण के साथ स्वतंत्र रूप से गति करते रहते हैं।", "Their particles are closely packed with strong attraction / इनके कण प्रबल आकर्षण बल के साथ आपस में कसकर बंधे हुए होते हैं।", "Their particles possess very low mass and volume / इनके कणों का द्रव्यमान और आयतन बहुत कम होता है।", "Their particles slide easily under applied external force / बाहरी बल आरोपित होने पर इनके कण आसानी से फिसल जाते हैं।"], "ans": 1},
+            {"en": "Which of the following is a characteristic feature of the gaseous state of matter?", "hi": "निम्नलिखित में से कौन-सा, द्रव्य की गैसीय अवस्था का एक विशिष्ट अभिलक्षण है?", "opts": ["High rigidity and fixed volume / उच्च कठोरता और निश्चित आयतन", "Definite volume but no definite shape / निश्चित आयतन, परंतु कोई निश्चित आकृति नहीं", "Negligible intermolecular forces and high compressibility / नगण्य अंतर-आणविक बल और उच्च संपीड्यता", "Strong intermolecular forces and fixed shape / प्रबल अंतर-आणविक बल और स्थायी आकृति"], "ans": 2},
+            {"en": "Why do noble gases exist as gases at room temperature, while halogens exist as solids, liquids, or gases down the group?", "hi": "उत्कृष्ट गैसें कक्ष ताप पर गैसों के रूप में क्यों विद्यमान होती हैं जबकि हैलोजन, वर्ग में नीचे जाने पर ठोस, द्रव या गैस के रूप में विद्यमान होते हैं?", "opts": ["Strong chemical bonds in noble gases / उत्कृष्ट गैसों में प्रबल रासायनिक आबंध होते हैं", "Larger atomic size of noble gases / उत्कृष्ट गैसों का परमाणु आकार बड़ा होता है", "Weak intermolecular forces in noble gases / उत्कृष्ट गैसों में दुर्बल अंतराअणुक बल होते हैं", "High reactivity of noble gases / उत्कृष्ट गैसों की अभिक्रियाशीलता उच्‍च होती है"], "ans": 2},
+            {"en": "The state of matter where particles are far apart and move randomly and quickly is the:", "hi": "पदार्थ की वह अवस्था जहाँ कण दूर-दूर होते हैं और बेतरतीब ढंग से और तेज़ी से घूमते हैं, वह है:", "opts": ["Plasma state / प्लाज्मा अवस्था", "Solid state / ठोस अवस्था", "Liquid state / द्रव अवस्था", "Gaseous state / गैसीय अवस्था"], "ans": 3},
+            {"en": "Which of the following observations supports that matter is made of small particles?", "hi": "निम्नलिखित में से कौन सा अवलोकन यह दर्शाता है कि पदार्थ छोटे कणों से बना है?", "opts": ["Sugar dissolves in water without change in level. / स्तर में बदलाव के बिना चीनी पानी में घुल जाती है।", "Oil floats above the surface after gentle stirring. / हल्की हलचल के बाद तेल सतह के ऊपर तैरता है।", "Sand settles at the bottom when mixed with water. / पानी के साथ मिलाने पर रेत नीचे बैठ जाती है।", "Chalk powder remains visible even after mixing. / चॉक पाउडर मिलाने के बाद भी दिखाई देता है।"], "ans": 0},
+            {"en": "Which of the following options does NOT represent a property of liquids?", "hi": "निम्नलिखित में से कौन-सा विकल्प द्रवों के गुण का प्रतिनिधित्व नहीं करता है?", "opts": ["Liquids have no fixed shape / द्रवों का कोई निश्चित आकार नहीं होता है।", "Liquids flow and change shape / द्रव बहते हैं और अपना आकार बदलते है।", "Liquids do not have fixed volume / द्रवों का आयतन निश्चित नहीं होता है।", "Liquids take the shape of the container in which they are kept / द्रव जिस पात्र में रखे जाते हैं, उसका आकार ग्रहण करते हैं।"], "ans": 2},
+            {"en": "Which of the following is NOT a characteristic of particles of matter?", "hi": "निम्नलिखित में से कौन-सी पदार्थ के कणों की विशेषता नहीं है?", "opts": ["Particles of matter are static. / पदार्थ के कण स्थिर होते हैं।", "Particles of matter have space between them. / पदार्थ के कणों के बीच स्थान होता है।", "Particles of matter are continuously moving. / पदार्थ के कण लगातार गतिमान होते हैं।", "Particles of matter attract each other. / पदार्थ के कण एक-दूसरे को आकर्षित करते हैं।"], "ans": 0},
+            {"en": "Solid CO₂ gets converted directly into the gaseous state upon decreasing the pressure to ________.", "hi": "ठोस CO₂ दाब को ________ तक कम करने पर सीधे गैसीय अवस्था में परिवर्तित हो जाता है।", "opts": ["2 atmosphere, without coming to the liquid state / द्रव अवस्था में आए बिना, 2 वायुमंडल", "1 atmosphere, without coming to the liquid state / द्रव अवस्था में आए बिना, 1 वायुमंडल", "3 atmosphere, without coming to the liquid state / द्रव अवस्था में आए बिना, 3 वायुमंडल", "4 atmosphere, without coming to the liquid state / द्रव अवस्था में आए बिना, 4 वायुमंडल"], "ans": 1},
+            {"en": "What is the effect of heating on the rate of diffusion?", "hi": "तापन के प्रभाव से विसरण की दर पर क्या प्रभाव पड़ता है?", "opts": ["It first increases and then, decreases after some time. / यह पहले बढ़ता है और फिर कुछ समय बाद घटता है।", "It increases with increase of temperature / यह तापमान में वृद्धि के साथ बढ़ता है।", "It decreases with increase of temperature / यह तापमान में वृद्धि के साथ घटता है।", "There is no effect of temperature on the rate of diffusion. / विसरण की दर पर तापमान का कोई प्रभाव नहीं पड़ता है।"], "ans": 1},
+            {"en": "Which of the following examples shows that particles of matter have enough space between them?", "hi": "निम्नलिखित में से कौन सा उदाहरण दर्शाता है कि पदार्थ के कणों के बीच पर्याप्त स्थान होता है?", "opts": ["Boiling of water / पानी का उबलना", "Potassium permanganate got evenly distributed in water / पोटेशियम परमैंगनेट का पानी में समान रूप से वितरित होना", "Breaking of iron nail / लोहे की कील का टूटना", "Lighting incense stick / अगरबत्ती जलाना"], "ans": 1},
+            {"en": "Which of the following statements is/are correct regarding 'changes of state of matter'?\nA) A change of state of matter is a physical change.\nB) A change of state of matter is an irreversible change.", "hi": "पदार्थ की अवस्थाओं में परिवर्तन' के संबंध में निम्नलिखित में से कौन सा/से कथन सही है/हैं?\nA) पदार्थ की अवस्था में परिवर्तन एक भौतिक परिवर्तन है।\nB) पदार्थ की अवस्था में परिवर्तन एक अपरिवर्तनीय परिवर्तन है।", "opts": ["Only B / केवल B", "Neither A nor B / न तो A और न ही B", "Both A and B / A और B दोनों", "Only A / केवल A"], "ans": 3},
+            {"en": "When a drop of ink is added to water and left undisturbed, the ink gradually spreads throughout the water. Which property of matter does this observation best demonstrate?", "hi": "जब स्याही की एक बूंद पानी में डाली जाती है और बिना हिलाए छोड़ दी जाती है, तो स्याही धीरे-धीरे पूरे पानी में फैल जाती है। यह अवलोकन पदार्थ के किस गुण को सबसे अच्छी तरह दर्शाता है?", "opts": ["Continuous movement of particles / कणों की निरंतर गति", "Fixed positions of particles / कणों की निश्चित स्थिति", "Attraction between particles / कणों के बीच आकर्षण", "Spaces between particles / कणों के बीच रिक्त स्थान"], "ans": 0},
+            {"en": "Which property best explains why solids have a definite shape and volume?", "hi": "कौन सा गुण सबसे अच्छी तरह से बताता है कि ठोस पदार्थों का एक निश्चित आकार और आयतन क्यों होता है?", "opts": ["The particles are closely packed in a fixed arrangement. / कण एक निश्चित व्यवस्था में कसकर पैक होते हैं।", "The particles are randomly arranged. / कण बेतरतीब ढंग से व्यवस्थित होते हैं।", "The particles have large spaces between them. / कणों के बीच बड़े रिक्त स्थान होते हैं।", "The particles can move freely past each other. / कण एक-दूसरे से स्वतंत्र रूप से गति कर सकते हैं।"], "ans": 0},
+            {"en": "The forces of attraction between particles are _________ in solids, __________ in liquids, and _________ in gases.", "hi": "कणों के बीच आकर्षण बल ठोसों में _________, द्रवों में _________ और गैसों में _________ होते हैं।", "opts": ["maximum, intermediate, minimum / अधिकतम, मध्यवर्ती, न्यूनतम", "maximum, minimum, intermediate / अधिकतम, न्यूनतम, मध्यवर्ती", "maximum, intermediate, maximum / अधिकतम, मध्यवर्ती, अधिकतम", "maximum, minimum, minimum / अधिकतम, न्यूनतम, न्यूनतम"], "ans": 0},
+            {"en": "Select the correct pair of example of 'sublimation'.", "hi": "'ऊर्ध्वपातन' के उदाहरणों के सही युग्म का चयन करें।", "opts": ["Camphor and napthalene / कपूर और नेफ़थलीन", "Sugar and napthalene / चीनी और नेफ़थलीन", "Dry ice and salt / शुष्क बर्फ और नमक", "Salt and camphor / नमक और कपूर"], "ans": 0},
+            {"en": "Salt dissolves in water because:", "hi": "नमक पानी में घुल जाता है क्योंकि:", "opts": ["It has lower density than water and floats easily / इसका घनत्व पानी से कम होता है और यह आसानी से तैरता है", "It evaporates quickly in water during mixing / यह मिश्रण के दौरान पानी में तेजी से वाष्पित हो जाता है", "It melts at room temperature forming a liquid / यह कमरे के तापमान पर पिघलकर द्रव बन जाता है", "Water has space between particles for ions to enter / पानी में कणों के बीच आयनों के प्रवेश के लिए जगह होती है"], "ans": 3},
+            {"en": "Which of the following is a chemical change?", "hi": "निम्नलिखित में से कौन सा रासायनिक परिवर्तन है?", "opts": ["Combustion of petrol / पेट्रोल का दहन", "Mixing salt and water / नमक और पानी मिलाना", "Evaporation of water / पानी का वाष्पीकरण", "Ice melting / बर्फ का पिघलना"], "ans": 0},
+            {"en": "Which of the following causes a change in the state of matter?", "hi": "निम्नलिखित में से किसके कारण पदार्थ की अवस्था में परिवर्तन होता है?", "opts": ["Cutting the substance / पदार्थ को काटना", "Mixing it with another substance / इसे किसी अन्य पदार्थ के साथ मिलाना", "Changing temperature or pressure / तापमान या दाब में परिवर्तन", "Dissolving the substance / पदार्थ को घोलना"], "ans": 2},
+            {"en": "Select the option regarding the matter which has sufficient spaces between them or are not tightly packed.\nSalt, Iron, Sugar", "hi": "उस पदार्थ से संबंधित विकल्प का चयन करें जिसमें पर्याप्त स्थान हों या जो कसकर पैक न हों।\nनमक, लोहा, चीनी", "opts": ["Only sugar / केवल चीनी", "Only iron / केवल लोहा", "Both sugar and salt / चीनी और नमक दोनों", "Both iron and salt / लोहा और नमक दोनों"], "ans": 2},
+            {"en": "Which of the following activities best demonstrates that there is a force of attraction between particles of matter?", "hi": "निम्नलिखित में से कौन सी गतिविधि सबसे अच्छी तरह से दर्शाती है कि पदार्थ के कणों के बीच आकर्षण बल होता है?", "opts": ["Compressing a sponge / स्पंज को संपीड़ित करना", "Dissolving sugar in water / पानी में चीनी घोलना", "Breaking a chalk stick / चाक की छड़ी को तोड़ना", "Heating ice to form water / पानी बनाने के लिए बर्फ को गर्म करना"], "ans": 2},
+            {"en": "Select the correct statement with respect to 'particles of matter'.", "hi": "'पदार्थ के कणों' के संबंध में सही कथन का चयन करें।", "opts": ["In solids, particles have more space between them. / ठोस पदार्थों में, कणों के बीच अधिक स्थान होता है।", "Particles of matter are stationary. / पदार्थ के कण स्थिर होते हैं।", "In liquid, particles have no space between them. / तरल में, कणों के बीच कोई स्थान नहीं होता है।", "Particles of matter move continuously. / पदार्थ के कण निरंतर गति करते हैं।"], "ans": 3},
+            {"en": "Which activity shows that particles of matter are continuously moving?", "hi": "कौन सी गतिविधि यह दर्शाती है कि पदार्थ के कण निरंतर गतिशील रहते हैं?", "opts": ["Ice melting at room temperature / कमरे के तापमान पर बर्फ का पिघलना", "Fragrance of perfumes spreading in a room / कमरे में इत्र की खुशबू का फैलना", "Sugar settling at the bottom of a glass of water / पानी के गिलास के तल में चीनी का बैठना", "Water being heated to its boiling point / पानी को उसके क्वथनांक तक गर्म करना"], "ans": 1},
+            {"en": "What happens when we dissolve sugar in water?", "hi": "जब हम पानी में चीनी घोलते हैं तो क्या होता है?", "opts": ["The particles of sugar will float on top of water. / चीनी के कण पानी के ऊपर तैरेंगे।", "A colloidal solution is formed. / एक कोलाइडल विलयन बनता है।", "The particles of sugar get into the spaces between particles of water. / चीनी के कण पानी के कणों के बीच के रिक्त स्थानों में समा जाते हैं।", "The particles of sugar and water do not mix. / चीनी और पानी के कण आपस में नहीं मिलते हैं।"], "ans": 2},
+            {"en": "Which of the following statement is correct regarding 'property of Gaseous state'?", "hi": "'गैसीय अवस्था के गुण' के संबंध में निम्नलिखित में से कौन सा कथन सही है?", "opts": ["In gaseous state, intermolecular attraction and intermolecular distance are very large / गैसीय अवस्था में, अंतर-आणविक आकर्षण और अंतर-आणविक दूरी बहुत अधिक होती है", "In gaseous state, intermolecular distance is very low and intermolecular attraction is very large. / गैसीय अवस्था में, अंतर-आणविक दूरी बहुत कम होती है और अंतर-आणविक आकर्षण बहुत अधिक होता है।", "In gaseous state, intermolecular distance is very large and intermolecular attraction is very low. / गैसीय अवस्था में, अंतर-आणविक दूरी बहुत अधिक होती है और अंतर-आणविक आकर्षण बहुत कम होता है।", "In gaseous state, intermolecular distance and intermolecular attraction are very low. / गैसीय अवस्था में, अंतर-आणविक दूरी और अंतर-आणविक आकर्षण बहुत कम होते हैं।"], "ans": 2},
+            {"en": "The phenomenon of spreading out and mixing of a substance with another substance due to the motion of its particles is called which of the following?", "hi": "किसी पदार्थ के कणों की गति के कारण किसी पदार्थ का दूसरे पदार्थ में फैलने और मिलने की घटना को निम्नलिखित में से क्या कहा जाता है?", "opts": ["Sublimation / ऊर्ध्वपातन", "Diffusion / विसरण", "Condensation / संघनन", "Evaporation / वाष्पीकरण"], "ans": 1},
+            {"en": "The ability of gases to be compressed easily is due to:", "hi": "गैसों की आसानी से संपीड़ित होने की क्षमता का कारण है:", "opts": ["strong forces between particles / कणों के बीच मजबूत बल", "lack of particles / कणों की कमी", "high mass of particles / कणों का उच्च द्रव्यमान", "large spaces between particles / कणों के बीच बड़े स्थान"], "ans": 3},
+            {"en": "When sugar is dissolved in water, the particles of sugar:", "hi": "जब चीनी को पानी में घोला जाता है, तो चीनी के कण:", "opts": ["occupy more space / अधिक जगह घेरते हैं", "disappear permanently / स्थायी रूप से गायब हो जाते हैं", "get into the spaces between water particles / पानी के कणों के बीच की जगह में चले जाते हैं", "break into smaller pieces only / केवल छोटे टुकड़ों में टूट जाते हैं"], "ans": 2},
+            {"en": "Which of the following shows the strongest force of attraction between particles?", "hi": "निम्नलिखित में से कौन कणों के बीच सबसे प्रबल आकर्षण बल दर्शाता है?", "opts": ["Water / जल", "Iron rod / आयरन छड़", "Alcohol / ऐल्कोहॉल", "Oxygen gas / ऑक्सीजन गैस"], "ans": 1},
+            {"en": "Select the correct example of a crystalline solid.", "hi": "क्रिस्टलीय ठोस का सही उदाहरण चुनें।", "opts": ["Only salt / केवल नमक", "All salt, sugar and sand / सभी नमक, चीनी और रेत", "Only sand / केवल रेत", "Both sugar and salt / चीनी और नमक दोनों"], "ans": 3},
+            {"en": "Which of the following experimental observations provides the strongest evidence for the existence of particles in matter?", "hi": "निम्नलिखित में से कौन सा प्रायोगिक अवलोकन पदार्थ में कणों के अस्तित्व के लिए सबसे मजबूत प्रमाण प्रदान करता है?", "opts": ["A drop of ink spreads evenly in water without stirring / स्याही की एक बूंद बिना हिलाए पानी में समान रूप से फैल जाती है", "Ice melts into water when heated / बर्फ गर्म करने पर पानी में पिघल जाती है", "Water boils and produces steam / पानी उबलता है और भाप पैदा करता है", "Salt dissolves faster in warm water than in cold water / नमक ठंडे पानी की तुलना में गर्म पानी में तेजी से घुलता है"], "ans": 0},
+            {"en": "Which of the following phenomena is NOT a physical change?", "hi": "निम्नलिखित में से कौन सी घटना भौतिक परिवर्तन नहीं है?", "opts": ["Boiling of water / पानी का उबलना", "Melting of ice / बर्फ का पिघलना", "Burning of candle / मोमबत्ती का जलना", "Freezing of water / पानी का जमना"], "ans": 2},
+            {"en": "Which of the following statements is correct about the 'Attraction of particles of matter'?", "hi": "\"पदार्थ के कणों के आकर्षण' के बारे में निम्नलिखित में से कौन सा कथन सही है?", "opts": ["The force of attraction is same for different particles. / आकर्षण बल विभिन्न कणों के लिए समान होता है।", "The force of attraction is less in liquids as compared to gases. / गैसों की तुलना में तरल पदार्थों में आकर्षण बल कम होता है।", "The force of attraction is more in liquids as compared to solids. / ठोस पदार्थों की तुलना में तरल पदार्थों में आकर्षण बल अधिक होता है।", "The force of attraction is different for different particles. / आकर्षण बल विभिन्न कणों के लिए अलग-अलग होता है।"], "ans": 3},
+            {"en": "Which of the following is a chemical property?", "hi": "निम्नलिखित में से कौन सा एक रासायनिक गुण है?", "opts": ["Boiling point / क्वथनांक", "Melting point / गलनांक", "Fluidity / तरलता", "Burning in air / हवा में जलना"], "ans": 3},
+            {"en": "Which of the following will show diffusion fastest?", "hi": "निम्नलिखित में से किसमें विसरण सबसे तेज होगा?", "opts": ["Solid in solid / ठोस में ठोस", "Gas in gas / गैस में गैस", "Solid in liquid / ठोस में तरल", "Liquid in gas / तरल में गैस"], "ans": 1},
+            {"en": "Which of the following is a result of increasing the pressure on a gas?", "hi": "निम्नलिखित में से कौन सा गैस पर दबाव बढ़ाने का परिणाम है?", "opts": ["Increase in inter-particle space / अंतर-कण स्थान में वृद्धि", "Evaporation of the gas / गैस का वाष्पीकरण", "Increase in kinetic energy / गतिज ऊर्जा में वृद्धि", "Decrease in inter-particle space / अंतर-कण स्थान में कमी"], "ans": 3},
+            {"en": "Which of the following statements is/are correct regarding the liquid state of matter?\nStatement I: Liquids have fixed volume but no fixed shape.\nStatement II: The rate of diffusion of liquids is higher than that of solids.", "hi": "पदार्थ की द्रव अवस्था के संबंध में निम्नलिखित में से कौन सा/से कथन सही है/हैं?\nकथन I: द्रवों का आयतन निश्चित होता है लेकिन आकार निश्चित नहीं होता है।\nकथन II: द्रवों में विसरण की दर ठोसों की तुलना में अधिक होती है।", "opts": ["Neither statement I nor II is correct. / न तो कथन I और न ही कथन II सही है।", "Only statement I is correct. / केवल कथन I सही है।", "Both statements I and II are correct. / कथन I और II दोनों सही हैं।", "Only statement II is correct. / केवल कथन II सही है।"], "ans": 2},
+            {"en": "Which of the following scientists proposed the ‘Law of Constant Proportions’?", "hi": "निम्नलिखित में से किस वैज्ञानिक ने 'नियत अनुपात का नियम' प्रतिपादित किया?", "opts": ["Ernest Rutherford / अर्नेस्ट रदरफोर्ड", "E Goldstein / ई गोल्डस्टीन", "JJ Thomson / जे जे थॉमसन", "Joseph Proust / जोसेफ प्राउस्ट"], "ans": 3},
+            {"en": "Which of the following statements is NOT true regarding the particles of matter?", "hi": "पदार्थ के कणों के संबंध में निम्नलिखित में से कौन-सा कथन सत्य नहीं है?", "opts": ["They are very small. / वे बहुत छोटे होते हैं।", "They are moving constantly. / वे लगातार गतिमान रहते हैं।", "They do not have spaces in between them. / उनके बीच कोई स्थान नहीं होता है।", "They attract each other. / वे एक-दूसरे को आकर्षित करते हैं।"], "ans": 2},
+            {"en": "Gas to liquid and liquid to solid conversion is:", "hi": "गैस से द्रव और द्रव से ठोस रूपांतरण है:", "opts": ["solidification and condensation respectively / क्रमशः पिंडन और संघनन", "fusion and vaporisation respectively / क्रमशः संलयन और वाष्पीकरण", "condensation and solidification respectively / क्रमशः संघनन और पिंडन", "sublimation and fusion respectively / क्रमशः ऊर्ध्वपातन और संलयन"], "ans": 2},
+            {"en": "Which of the following does NOT correctly match a change in the state of matter with its corresponding process?", "hi": "निम्नलिखित में से कौन-सा पदार्थ की अवस्था में परिवर्तन और उसकी संगत प्रक्रिया का सही मिलान नहीं करता है?", "opts": ["Gas to Liquid: Sublimation / गैस से द्रव: ऊर्ध्वपातन", "Gas to Solid: Deposition / गैस से ठोस: निक्षेपण", "Solid to Gas: Sublimation / ठोस से गैस: ऊर्ध्वपातन", "Liquid to Gas: Evaporation / द्रव से गैस: वाष्पीकरण"], "ans": 0},
+            {"en": "A change of state directly from gas to solid without changing into liquid state is called:", "hi": "द्रव अवस्था में बदले बिना गैस से सीधे ठोस अवस्था में परिवर्तन को क्या कहते हैं?", "opts": ["fusion / संलयन", "solidification / पिंडन", "vaporisation / वाष्पीकरण", "deposition / निक्षेपण"], "ans": 3},
+            {"en": "Which of the following statements is/are correct regarding the effects of changes in pressure on the states of matter?\nStatement I: Applying pressure and reducing temperature can liquefy gases.\nStatement II: Solid carbon dioxide is stored under high pressure.", "hi": "पदार्थ की अवस्थाओं पर दाब में परिवर्तन के प्रभावों के संबंध में निम्नलिखित में से कौन-सा/से कथन सही है/हैं?\nकथन I: दाब डालने और तापमान कम करने से गैसों का द्रवीकरण किया जा सकता है।\nकथन II: ठोस कार्बन डाइऑक्साइड को उच्च दाब में संग्रहीत किया जाता है।", "opts": ["Only statement I is correct. / केवल कथन I सही है।", "Both statements I and II are correct. / कथन I और II दोनों सही हैं।", "Only statement II is correct. / केवल कथन II सही है।", "Neither statement I nor II is correct. / न तो कथन I और न ही II सही है।"], "ans": 1},
+            {"en": "Which of the following pairs is an example of a solid state of matter?", "hi": "निम्नलिखित में से कौन-सा युग्म पदार्थ की ठोस अवस्था का उदाहरण है?", "opts": ["Sugar and sponge / चीनी और स्पंज", "Water and oxygen / पानी और ऑक्सीजन", "Juice and milk / जूस और दूध", "Oil and sugar / तेल और चीनी"], "ans": 0}
+        ];
+
+        const state = {
+            current: 0,
+            answers: new Array(QUESTIONS.length).fill(null),
+            locked: new Array(QUESTIONS.length).fill(false),
+            visited: new Array(QUESTIONS.length).fill(false),
+            lang: 'en',
+            mode: 'test',
+            startTime: null,
+            timerInterval: null,
+            elapsed: 0
+        };
+
+        function $(id) { return document.getElementById(id); }
+        function esc(s) { const d = document.createElement('div'); d.textContent = s || ''; return d.innerHTML; }
+
+        function toast(msg) {
+            const t = $('toast');
+            $('toastText').textContent = msg;
+            t.classList.add('show');
+            setTimeout(() => t.classList.remove('show'), 2000);
+        }
+
+        function formatTime(s) {
+            const m = Math.floor(s / 60);
+            return String(m).padStart(2, '0') + ':' + String(s % 60).padStart(2, '0');
+        }
+
+        function startApp(mode) {
+            state.mode = mode;
+            $('startScreen').classList.add('hidden');
+            $('quizApp').classList.remove('hidden');
+            state.startTime = Date.now();
+            state.visited[0] = true;
+            state.timerInterval = setInterval(() => {
+                state.elapsed = Math.floor((Date.now() - state.startTime) / 1000);
+                $('timerText').textContent = formatTime(state.elapsed);
+            }, 1000);
+            renderQuestion();
+            buildPalette();
+        }
+
+        function renderQuestion() {
+            const i = state.current;
+            const q = QUESTIONS[i];
+            const qText = state.lang === 'en' ? q.en : q.hi;
+            const isQuiz = state.mode === 'quiz';
+            const locked = state.locked[i];
+            const userAns = state.answers[i];
+
+            let optsHtml = '';
+            q.opts.forEach((opt, idx) => {
+                let cls = '';
+                let tag = '';
+                if (isQuiz && locked) {
+                    if (idx === q.ans) { cls = 'correct'; tag = '<span class="opt-tag">Correct</span>'; }
+                    if (userAns === idx && idx !== q.ans) { cls = 'wrong'; tag = '<span class="opt-tag">Your Ans</span>'; }
+                } else if (userAns === idx) {
+                    cls = 'selected';
+                }
+                optsHtml += `
+                    <div class="opt ${cls} ${locked ? 'locked' : ''}" onclick="selectOption(${idx})">
+                        <div class="opt-letter">${String.fromCharCode(65 + idx)}</div>
+                        <div class="opt-text">${esc(opt)}</div>
+                        ${tag}
+                    </div>
+                `;
+            });
+
+            let solHtml = '';
+            if (isQuiz && locked) {
+                solHtml = `
+                    <div class="sol-box">
+                        <div class="sol-head"><i class="fas fa-lightbulb"></i> Answer Key</div>
+                        <div class="sol-content">Correct Option: <strong>${String.fromCharCode(65 + q.ans)} (${esc(q.opts[q.ans])})</strong></div>
+                    </div>
+                `;
+            }
+
+            $('quizMain').innerHTML = `
+                <div class="q-card">
+                    <div class="q-top">
+                        <div class="q-num-badge"><i class="fas fa-hashtag"></i> Question ${i + 1} of ${QUESTIONS.length}</div>
+                        <button class="lang-btn" onclick="toggleLang()"><i class="fas fa-language"></i> ${state.lang === 'en' ? 'हिन्दी' : 'English'}</button>
+                    </div>
+                    <div class="q-text">${esc(qText)}</div>
+                    <div class="opts">${optsHtml}</div>
+                    ${solHtml}
+                </div>
+            `;
+
+            $('prevBtn').disabled = i === 0;
+            $('nextLabel').textContent = i === QUESTIONS.length - 1 ? 'Finish' : 'Next';
+            updatePaletteGrid();
+        }
+
+        function selectOption(idx) {
+            const i = state.current;
+            if (state.mode === 'quiz' && state.locked[i]) return;
+
+            state.answers[i] = idx;
+            if (state.mode === 'quiz') {
+                state.locked[i] = true;
+                if (idx === QUESTIONS[i].ans) toast('Correct! 🎉');
+                else toast('Incorrect');
+            }
+            renderQuestion();
+        }
+
+        function toggleLang() {
+            state.lang = state.lang === 'en' ? 'hi' : 'en';
+            renderQuestion();
+        }
+
+        function prevQuestion() {
+            if (state.current > 0) {
+                state.current--;
+                state.visited[state.current] = true;
+                renderQuestion();
+            }
+        }
+
+        function nextQuestion() {
+            if (state.current < QUESTIONS.length - 1) {
+                state.current++;
+                state.visited[state.current] = true;
+                renderQuestion();
+            } else {
+                openSubmitModal();
+            }
+        }
+
+        function buildPalette() {
+            const grid = $('paletteGrid');
+            grid.innerHTML = '';
+            QUESTIONS.forEach((_, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'pal-btn';
+                btn.id = 'pal-' + i;
+                btn.textContent = i + 1;
+                btn.onclick = () => {
+                    state.current = i;
+                    state.visited[i] = true;
+                    closePalette();
+                    renderQuestion();
+                };
+                grid.appendChild(btn);
+            });
+            updatePaletteGrid();
+        }
+
+        function updatePaletteGrid() {
+            QUESTIONS.forEach((_, i) => {
+                const btn = $('pal-' + i);
+                if (!btn) return;
+                btn.className = 'pal-btn';
+                if (i === state.current) btn.classList.add('current');
+                if (state.answers[i] !== null) btn.classList.add('answered');
+            });
+        }
+
+        function openPalette() {
+            $('paletteDrawer').classList.add('open');$('paletteOverlay').classList.add('open');
+        }
+        function closePalette() {
+            $('paletteDrawer').classList.remove('open');$('paletteOverlay').classList.remove('open');
+        }
+
+        function openSubmitModal() {
+            const ans = state.answers.filter(a => a !== null).length;
+            $('modalAttempted').textContent = ans;
+            $('modalUnattempted').textContent = QUESTIONS.length - ans;
+            $('submitModal').classList.add('open');
+        }
+        function closeSubmitModal() {
+            $('submitModal').classList.remove('open');
+        }
+
+        function confirmSubmit() {
+            closeSubmitModal();
+            if (state.timerInterval) clearInterval(state.timerInterval);
+
+            let correct = 0, wrong = 0;
+            state.answers.forEach((ans, i) => {
+                if (ans !== null) {
+                    if (ans === QUESTIONS[i].ans) correct++;
+                    else wrong++;
+                }
+            });
+
+            const attempted = correct + wrong;
+            const accuracy = attempted > 0 ? Math.round((correct / attempted) * 100) : 0;
+
+            $('resultsInner').innerHTML = `
+                <div class="res-hero">
+                    <h2>Test Completed!</h2>
+                    <p style="color:var(--text-muted);font-size:14px;margin-top:2px;">Total Time: ${formatTime(state.elapsed)}</p>
+                </div>
+                <div class="res-score-card">
+                    <div class="res-score-val">${correct} <span>/ ${QUESTIONS.length}</span></div>
+                    <div class="res-score-lbl">Total Score</div>
+                </div>
+                <div class="res-grid">
+                    <div class="res-item">
+                        <div class="res-item-val" style="color:var(--green)">${correct}</div>
+                        <div class="res-item-lbl">Correct</div>
+                    </div>
+                    <div class="res-item">
+                        <div class="res-item-val" style="color:var(--red)">${wrong}</div>
+                        <div class="res-item-lbl">Wrong</div>
+                    </div>
+                    <div class="res-item">
+                        <div class="res-item-val">${attempted}</div>
+                        <div class="res-item-lbl">Attempted</div>
+                    </div>
+                    <div class="res-item">
+                        <div class="res-item-val" style="color:var(--primary)">${accuracy}%</div>
+                        <div class="res-item-lbl">Accuracy</div>
+                    </div>
+                </div>
+                <div class="res-actions">
+                    <button class="res-btn primary" onclick="location.reload()"><i class="fas fa-redo"></i> Retake Test</button>
+                </div>
+            `;
+            $('resultsScreen').classList.add('open');
+        }
+    </script>
+</body>
+</html>
